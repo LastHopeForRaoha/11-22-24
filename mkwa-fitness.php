@@ -101,6 +101,13 @@ add_action('mkwa_activity_logged', function($member_id) {
     mkwa_award_badge($member_id, $points);
 });
 
+// Initialize frontend
+require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-frontend.php';
+new MKWA_Frontend();
+// Initialize AJAX handler
+require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-ajax.php';
+new MKWA_Ajax();
+
 /**
  * Main plugin class
  */
