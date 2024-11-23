@@ -1,0 +1,426 @@
+/* Main Dashboard Layout */
+.mkwa-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.mkwa-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.mkwa-level-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.mkwa-level {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2c3e50;
+    padding: 5px 15px;
+    background: #e9ecef;
+    border-radius: 20px;
+}
+
+.mkwa-points {
+    font-size: 1.1em;
+    color: #34495e;
+}
+
+.mkwa-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.mkwa-dashboard-section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mkwa-dashboard-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+/* Progress Tracker Styles */
+.mkwa-progress-tracker {
+    padding: 15px;
+}
+
+.mkwa-progress-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.mkwa-stat-block {
+    text-align: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.mkwa-stat-label {
+    display: block;
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.mkwa-stat-value {
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.mkwa-level-progress {
+    margin-top: 20px;
+}
+
+.mkwa-progress-bar {
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.mkwa-progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #4CAF50, #8BC34A);
+    transition: width 0.3s ease;
+}
+
+.mkwa-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.mkwa-points-needed {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+/* Activity Log Styles */
+.mkwa-activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mkwa-activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.mkwa-activity-item:last-child {
+    border-bottom: none;
+}
+
+.mkwa-activity-type {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.mkwa-activity-points {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.mkwa-activity-time {
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.mkwa-no-activities {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+}
+
+/* Badges Styles */
+.mkwa-badges-container {
+    padding: 15px;
+}
+
+.mkwa-badges-summary {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.mkwa-badges-count {
+    font-size: 1.1em;
+    color: #2c3e50;
+}
+
+.mkwa-badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    padding: 10px;
+}
+
+.mkwa-badge-item {
+    text-align: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.mkwa-badge-item:hover {
+    transform: scale(1.05);
+}
+
+.mkwa-badge-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 8px;
+}
+
+.mkwa-badge-title {
+    display: block;
+    font-size: 0.9em;
+    color: #2c3e50;
+    word-wrap: break-word;
+}
+
+.mkwa-no-badges {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+}
+
+/* Class List Styles */
+.mkwa-class-list {
+    padding: 20px;
+}
+
+.mkwa-class-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.mkwa-filter-btn {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: #f8f9fa;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mkwa-filter-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
+.mkwa-classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.mkwa-class-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: transform 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.mkwa-class-card:hover {
+    transform: translateY(-5px);
+}
+
+.mkwa-class-card.registered {
+    border-left: 4px solid #28a745;
+}
+
+.mkwa-class-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.mkwa-class-title {
+    margin: 0;
+    font-size: 1.2em;
+    color: #2c3e50;
+}
+
+.mkwa-class-type {
+    background: #e9ecef;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.mkwa-class-details {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.mkwa-class-time,
+.mkwa-class-instructor,
+.mkwa-class-capacity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6c757d;
+    font-size: 0.95em;
+}
+
+.mkwa-class-description {
+    color: #2c3e50;
+    font-size: 0.95em;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.mkwa-class-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.mkwa-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.mkwa-btn-register {
+    background: #28a745;
+    color: white;
+}
+
+.mkwa-btn-register:hover {
+    background: #218838;
+}
+
+.mkwa-btn-cancel {
+    background: #dc3545;
+    color: white;
+}
+
+.mkwa-btn-cancel:hover {
+    background: #c82333;
+}
+
+.mkwa-btn-disabled {
+    background: #6c757d;
+    color: white;
+    cursor: not-allowed;
+}
+
+.mkwa-class-points {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #ffc107;
+    font-weight: 500;
+}
+
+.mkwa-no-classes {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+/* Icons */
+.mkwa-icon-clock,
+.mkwa-icon-user,
+.mkwa-icon-users,
+.mkwa-icon-star {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .mkwa-class-filters {
+        justify-content: center;
+    }
+    
+    .mkwa-class-card {
+        margin: 0 10px;
+    }
+    
+    .mkwa-class-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .mkwa-btn {
+        width: 100%;
+    }
+    
+    .mkwa-class-points {
+        justify-content: center;
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .mkwa-dashboard-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .mkwa-progress-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .mkwa-activity-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 5px;
+    }
+
+    .mkwa-badges-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+}
