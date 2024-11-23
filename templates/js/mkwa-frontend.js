@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    // Existing code for activity log and progress
+    // Existing activity log and progress tracking code
     function refreshActivityLog() {
         $.ajax({
             url: mkwaAjax.ajaxurl,
@@ -59,26 +59,100 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // New code for class management
-    function refreshClassList() {
+    // Class registration functionality
+    function registerForClass(classId) {
         $.ajax({
             url: mkwaAjax.ajaxurl,
             type: 'POST',
             data: {
-                action: 'mkwa_refresh_classes',
-                nonce: mkwaAjax.nonce
+                action: 'mkwa_register_for_class',
+                nonce: mkwaAjax.nonce,
+                class_id: classId
+            },
+            beforeSend: function() {
+                $('.mkwa-btn-register[data-class-id="' + classId + '"]')
+                    .prop('disabled', true)
+                    .text(mkwaStrings.registering);
             },
             success: function(response) {
                 if (response.success) {
-                    $('.mkwa-classes-grid').html(response.data.html);
+                    showNotification('success', response.data.message);
+                    refreshClassCard(classId);
+                    refreshProgress(); // Update points if applicable
+                } else {
+                    showNotification('error', response.data.message);
+                    $('.mkwa-btn-register[data-class-id="' + classId + '"]')
+                        .prop('disabled', false)
+                        .text(mkwaStrings.register);
+                }
+            },
+            error: function() {
+                showNotification('error', mkwaStrings.errorOccurred);
+                $('.mkwa-btn-register[data-class-id="' + classId + '"]')
+                    .prop('disabled', false)
+                    .text(mkwaStrings.register);
+            }
+        });
+    }
+
+    function unregisterFromClass(classId) {
+        if (confirm(mkwaStrings.confirmCancel)) {
+            $.ajax({
+                url: mkwaAjax.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'mkwa_unregister_from_class',
+                    nonce: mkwaAjax.nonce,
+                    class_id: classId
+                },
+                beforeSend: function() {
+                    $('.mkwa-btn-cancel[data-class-id="' + classId + '"]')
+                        .prop('disabled', true)
+                        .text(mkwaStrings.cancelling);
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showNotification('success', response.data.message);
+                        refreshClassCard(classId);
+                    } else {
+                        showNotification('error', response.data.message);
+                        $('.mkwa-btn-cancel[data-class-id="' + classId + '"]')
+                            .prop('disabled', false)
+                            .text(mkwaStrings.cancelRegistration);
+                    }
+                },
+                error: function() {
+                    showNotification('error', mkwaStrings.errorOccurred);
+                    $('.mkwa-btn-cancel[data-class-id="' + classId + '"]')
+                        .prop('disabled', false)
+                        .text(mkwaStrings.cancelRegistration);
+                }
+            });
+        }
+    }
+
+    function refreshClassCard(classId) {
+        $.ajax({
+            url: mkwaAjax.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'mkwa_refresh_class_card',
+                nonce: mkwaAjax.nonce,
+                class_id: classId
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('.mkwa-class-card[data-class-id="' + classId + '"]')
+                        .replaceWith(response.data.html);
                 }
             }
         });
     }
 
-    // Class filter handling
+    // Class filter functionality
     $('.mkwa-filter-btn').on('click', function() {
         const filter = $(this).data('filter');
+        
         $('.mkwa-filter-btn').removeClass('active');
         $(this).addClass('active');
         
@@ -90,88 +164,28 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // Class registration
-    $('.mkwa-btn-register').on('click', function() {
+    // Register button click handler
+    $(document).on('click', '.mkwa-btn-register', function(e) {
+        e.preventDefault();
         const classId = $(this).data('class-id');
-        const $button = $(this);
-        const $card = $button.closest('.mkwa-class-card');
-
-        $.ajax({
-            url: mkwaAjax.ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'mkwa_register_class',
-                nonce: mkwaAjax.nonce,
-                class_id: classId
-            },
-            beforeSend: function() {
-                $button.prop('disabled', true).text(mkwaStrings.registering);
-            },
-            success: function(response) {
-                if (response.success) {
-                    $card.removeClass('available').addClass('registered');
-                    $button.replaceWith(`
-                        <button class="mkwa-btn mkwa-btn-cancel" data-class-id="${classId}">
-                            ${mkwaStrings.cancelRegistration}
-                        </button>
-                    `);
-                    $card.find('.mkwa-class-capacity').text(response.data.spots_left);
-                    showNotification('success', response.data.message);
-                    refreshProgress();
-                } else {
-                    showNotification('error', response.data.message);
-                    $button.prop('disabled', false).text(mkwaStrings.register);
-                }
-            },
-            error: function() {
-                showNotification('error', mkwaStrings.errorOccurred);
-                $button.prop('disabled', false).text(mkwaStrings.register);
-            }
-        });
+        registerForClass(classId);
     });
 
-    // Class cancellation
-    $(document).on('click', '.mkwa-btn-cancel', function() {
+    // Cancel registration button click handler
+    $(document).on('click', '.mkwa-btn-cancel', function(e) {
+        e.preventDefault();
         const classId = $(this).data('class-id');
-        const $button = $(this);
-        const $card = $button.closest('.mkwa-class-card');
-
-        if (confirm(mkwaStrings.confirmCancel)) {
-            $.ajax({
-                url: mkwaAjax.ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'mkwa_cancel_class',
-                    nonce: mkwaAjax.nonce,
-                    class_id: classId
-                },
-                beforeSend: function() {
-                    $button.prop('disabled', true).text(mkwaStrings.cancelling);
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $card.removeClass('registered').addClass('available');
-                        $button.replaceWith(`
-                            <button class="mkwa-btn mkwa-btn-register" data-class-id="${classId}">
-                                ${mkwaStrings.register}
-                            </button>
-                        `);
-                        $card.find('.mkwa-class-capacity').text(response.data.spots_left);
-                        showNotification('success', response.data.message);
-                    } else {
-                        showNotification('error', response.data.message);
-                        $button.prop('disabled', false).text(mkwaStrings.cancelRegistration);
-                    }
-                },
-                error: function() {
-                    showNotification('error', mkwaStrings.errorOccurred);
-                    $button.prop('disabled', false).text(mkwaStrings.cancelRegistration);
-                }
-            });
-        }
+        unregisterFromClass(classId);
     });
 
-    // Existing notification code
+    // Activity logging button click handler
+    $('.mkwa-log-activity-btn').on('click', function(e) {
+        e.preventDefault();
+        const activityType = $(this).data('activity-type');
+        logActivity(activityType);
+    });
+
+    // Notification system
     function showNotification(type, message) {
         const notification = $('<div>')
             .addClass('mkwa-notification')
@@ -187,41 +201,7 @@ jQuery(document).ready(function($) {
         }, 3000);
     }
 
-    // Event handlers
-    $('.mkwa-log-activity-btn').on('click', function(e) {
-        e.preventDefault();
-        const activityType = $(this).data('activity-type');
-        logActivity(activityType);
-    });
-
     // Set up periodic refreshes
-    setInterval(refreshActivityLog, 300000);
+    setInterval(refreshActivityLog, 300000); // 5 minutes
     setInterval(refreshProgress, 300000);
-    setInterval(refreshClassList, 300000);
-
-    // Add notification styles
-    $('<style>')
-        .text(`
-            .mkwa-notification {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                padding: 15px 25px;
-                border-radius: 5px;
-                color: white;
-                z-index: 1000;
-                animation: slideIn 0.3s ease-out;
-            }
-            .mkwa-notification-success {
-                background-color: #28a745;
-            }
-            .mkwa-notification-error {
-                background-color: #dc3545;
-            }
-            @keyframes slideIn {
-                from { transform: translateX(100%); }
-                to { transform: translateX(0); }
-            }
-        `)
-        .appendTo('head');
 });

@@ -107,7 +107,7 @@ new MKWA_Frontend();
 // Initialize AJAX handler
 require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-ajax.php';
 new MKWA_Ajax();
-
+require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-classes.php';
 /**
  * Main plugin class
  */
