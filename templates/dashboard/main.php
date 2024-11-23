@@ -44,5 +44,11 @@ $user_data = get_userdata($user_id);
             <h3><?php esc_html_e('Your Badges', 'mkwa-fitness'); ?></h3>
             <?php include MKWA_PLUGIN_DIR . 'templates/dashboard/badges.php'; ?>
         </div>
+
+        <!-- Leaderboard Section -->
+<div class="mkwa-dashboard-section mkwa-leaderboard">
+    <h3><?php esc_html_e('Leaderboard', 'mkwa-fitness'); ?></h3>
+    <?php echo do_shortcode('[mkwa_leaderboard limit="5"]'); ?>
+</div>
     </div>
 </div>

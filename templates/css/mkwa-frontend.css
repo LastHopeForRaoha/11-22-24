@@ -620,6 +620,110 @@
     }
 }
 
+/* Leaderboard Styles */
+.mkwa-leaderboard {
+    margin: 20px 0;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mkwa-leaderboard h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.mkwa-leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mkwa-leaderboard-table th,
+.mkwa-leaderboard-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.mkwa-leaderboard-table th {
+    background: #f8f9fa;
+    font-weight: 500;
+    color: #3c434a;
+}
+
+.mkwa-leaderboard-table tr:hover {
+    background: #f8f9fa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .mkwa-leaderboard-table {
+        font-size: 14px;
+    }
+    
+    .mkwa-leaderboard-table th,
+    .mkwa-leaderboard-table td {
+        padding: 8px;
+    }
+}
+
+/* Leaderboard Styles */
+.mkwa-leaderboard {
+    margin: 20px 0;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--mkwa-shadow);
+}
+
+.mkwa-leaderboard h2 {
+    color: var(--mkwa-primary);
+    margin-bottom: 20px;
+}
+
+.mkwa-leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mkwa-leaderboard-table th,
+.mkwa-leaderboard-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--mkwa-light);
+}
+
+.mkwa-leaderboard-table th {
+    background: var(--mkwa-light);
+    font-weight: 500;
+    color: var(--mkwa-dark);
+}
+
+.mkwa-leaderboard-table tr:hover {
+    background: var(--mkwa-light);
+}
+
+.mkwa-leaderboard-table tr.current-user {
+    background-color: rgba(var(--mkwa-primary-rgb), 0.1);
+}
+
+.mkwa-leaderboard-table tr.current-user:hover {
+    background-color: rgba(var(--mkwa-primary-rgb), 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .mkwa-leaderboard-table {
+        font-size: 14px;
+    }
+    
+    .mkwa-leaderboard-table th,
+    .mkwa-leaderboard-table td {
+        padding: 8px;
+    }
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .mkwa-dashboard-header {

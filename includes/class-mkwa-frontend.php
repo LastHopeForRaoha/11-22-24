@@ -13,6 +13,7 @@ class MKWA_Frontend {
     public function __construct() {
         add_shortcode('mkwa_dashboard', array($this, 'render_dashboard'));
         add_shortcode('mkwa_class_schedule', array($this, 'render_class_schedule'));
+        add_shortcode('mkwa_leaderboard', array($this, 'display_leaderboard')); // Added leaderboard shortcode
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         
         // Add theme support
@@ -284,5 +285,74 @@ class MKWA_Frontend {
         </div>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Display leaderboard
+     *
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function display_leaderboard($atts) {
+        global $mkwa_leaderboard;
+        
+        if (!isset($mkwa_leaderboard)) {
+            return '<p>' . esc_html__('Leaderboard system is not initialized.', 'mkwa-fitness') . '</p>';
+        }
+        
+        $atts = shortcode_atts(array(
+            'type' => 'overall',
+            'limit' => 10
+        ), $atts);
+
+        $leaderboard_data = $mkwa_leaderboard->get_leaderboard($atts['type'], $atts['limit']);
+        
+        if (empty($leaderboard_data)) {
+            return '<p>' . esc_html__('No leaderboard data available.', 'mkwa-fitness') . '</p>';
+        }
+
+        ob_start();
+        ?>
+        <div class="mkwa-leaderboard">
+            <h2><?php echo esc_html(ucfirst($atts['type']) . ' ' . __('Leaderboard', 'mkwa-fitness')); ?></h2>
+            <table class="mkwa-leaderboard-table">
+                <thead>
+                    <tr>
+                        <th><?php esc_html_e('Rank', 'mkwa-fitness'); ?></th>
+                        <th><?php esc_html_e('Name', 'mkwa-fitness'); ?></th>
+                        <th><?php esc_html_e('Points', 'mkwa-fitness'); ?></th>
+                        <th><?php esc_html_e('Score', 'mkwa-fitness'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($leaderboard_data as $entry): ?>
+                    <tr<?php echo ($entry->user_id === get_current_user_id()) ? ' class="current-user"' : ''; ?>>
+                        <td><?php echo esc_html($entry->rank); ?></td>
+                        <td><?php echo esc_html($entry->display_name); ?></td>
+                        <td><?php echo esc_html(number_format($entry->total_points)); ?></td>
+                        <td><?php echo esc_html(number_format($entry->ranking_score, 1)); ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php
+         return ob_get_clean();
+    }
+
+    /**
+     * Format number with abbreviation for thousands/millions
+     *
+     * @param int $number Number to format
+     * @return string Formatted number
+     */
+    private function format_number($number) {
+        if ($number >= 1000000) {
+            return round($number / 1000000, 1) . 'M';
+        }
+        if ($number >= 1000) {
+            return round($number / 1000, 1) . 'K';
+        }
+        return $number;
     }
 }

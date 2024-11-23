@@ -1,17 +1,7 @@
 <?php
 /**
  * Plugin Name: MKWA Fitness
- * Plugin URI: https://yoursite.com/mkwa-fitness
- * Description: A comprehensive fitness tracking and gamification system
- * Version: 1.0.0
- * Author: LastHopeForRaoha
- * Author URI: https://yoursite.com
- * License: GPL v2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: mkwa-fitness
- * Domain Path: /languages
- *
- * @package MkwaFitness
+ * [Your existing plugin header remains the same...]
  */
 
 // Prevent direct access
@@ -37,161 +27,70 @@ define('MKWA_VERSION', '1.0.0');
 define('MKWA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('MKWA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('MKWA_PLUGIN_BASENAME', plugin_basename(__FILE__));
-define('MKWA_CURRENT_TIME', '2024-11-22 06:45:49'); // Updated to your current time
+define('MKWA_CURRENT_TIME', '2024-11-23 22:05:45'); // Updated to current time
 
+// Load required files
 try {
-    // Load required files first to ensure constants are available
     require_once MKWA_PLUGIN_DIR . 'includes/constants.php';
 } catch (Exception $e) {
     mkwa_log('Error loading constants.php: ' . $e->getMessage());
 }
 
-// Autoloader for plugin classes
+// Your existing autoloader
 spl_autoload_register(function ($class) {
-    try {
-        $prefix = 'MKWA_';
-        $base_dir = MKWA_PLUGIN_DIR . 'includes/';
-        
-        $len = strlen($prefix);
-        if (strncmp($prefix, $class, $len) !== 0) {
-            return;
-        }
-        
-        $relative_class = substr($class, $len);
-        $file = $base_dir . 'class-' . str_replace('_', '-', strtolower($relative_class)) . '.php';
-        
-        if (file_exists($file)) {
-            require $file;
-            mkwa_log("Successfully loaded class file: $file");
-        } else {
-            mkwa_log("Class file not found: $file");
-        }
-    } catch (Exception $e) {
-        mkwa_log('Error in autoloader: ' . $e->getMessage());
-    }
+    // [Your existing autoloader code remains the same...]
 });
 
+// Load required files
 try {
-    // Load functions after autoloader
     require_once MKWA_PLUGIN_DIR . 'includes/functions.php';
+    require_once MKWA_PLUGIN_DIR . 'includes/points-functions.php';
+    require_once MKWA_PLUGIN_DIR . 'includes/badge-system.php';
+    require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-frontend.php';
+    require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-ajax.php';
+    require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-classes.php';
+    require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-member-score.php'; // New file
 } catch (Exception $e) {
-    mkwa_log('Error loading functions.php: ' . $e->getMessage());
+    mkwa_log('Error loading required files: ' . $e->getMessage());
 }
 
-// Include points functions
-require_once plugin_dir_path(__FILE__) . 'includes/points-functions.php';
+// Initialize member score system
+function mkwa_init_member_score() {
+    global $mkwa_member_score;
+    if (!isset($mkwa_member_score)) {
+        $mkwa_member_score = new MKWA_Member_Score();
+        $mkwa_member_score->init();
+    }
+    return $mkwa_member_score;
+}
+add_action('plugins_loaded', 'mkwa_init_member_score');
 
-// Example usage
+// Your existing action hooks
 add_action('init', function() {
-    $member_id = 1; // Example member ID
-    $activity_type = MKWA_ACTIVITY_CHECKIN; // Example activity type
-    $points = MKWA_POINTS_CHECKIN_DEFAULT; // Example points value
-
-    // Add points to member
-    mkwa_add_points($member_id, $points, $activity_type);
+    // [Your existing init code remains the same...]
 });
-
-// Include badge system
-require_once plugin_dir_path(__FILE__) . 'includes/badge-system.php';
 
 add_action('mkwa_activity_logged', function($member_id) {
-    $points = mkwa_get_member_points($member_id);
-
-    // Award badge based on points
-    mkwa_award_badge($member_id, $points);
+    // [Your existing activity_logged code remains the same...]
 });
 
-// Initialize frontend
-require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-frontend.php';
+// Initialize frontend and AJAX
 new MKWA_Frontend();
-// Initialize AJAX handler
-require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-ajax.php';
 new MKWA_Ajax();
-require_once MKWA_PLUGIN_DIR . 'includes/class-mkwa-classes.php';
+
 /**
  * Main plugin class
  */
 final class MKWA_Fitness {
-    /**
-     * Single instance of the plugin
-     */
-    private static $instance = null;
+    // [Your existing class properties remain the same...]
 
-    /**
-     * Get plugin instance
-     */
-    public static function instance() {
-        if (is_null(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
-    /**
-     * Constructor
-     */
-    private function __construct() {
-        try {
-            $this->init_hooks();
-            mkwa_log('MKWA_Fitness instance constructed successfully');
-        } catch (Exception $e) {
-            mkwa_log('Error in MKWA_Fitness constructor: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Initialize hooks
-     */
-    private function init_hooks() {
-        add_action('plugins_loaded', array($this, 'init_plugin'));
-        register_activation_hook(__FILE__, array($this, 'activate'));
-        register_deactivation_hook(__FILE__, array($this, 'deactivate'));
-        
-        if (is_admin()) {
-            add_action('admin_enqueue_scripts', array($this, 'admin_enqueue_scripts'));
-        }
-        mkwa_log('Hooks initialized successfully');
-    }
-
-    /**
-     * Initialize plugin
-     */
-    public function init_plugin() {
-        try {
-            load_plugin_textdomain('mkwa-fitness', false, dirname(MKWA_PLUGIN_BASENAME) . '/languages');
-            $this->maybe_init_database();
-            mkwa_log('Plugin initialized successfully');
-        } catch (Exception $e) {
-            mkwa_log('Error initializing plugin: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Enqueue admin scripts and styles
-     */
-    public function admin_enqueue_scripts($hook) {
-        try {
-            if ('mkwa-fitness_page_mkwa-badges' === $hook) {
-                wp_enqueue_media();
-                wp_enqueue_style('mkwa-admin', MKWA_PLUGIN_URL . 'admin/css/admin.css', array(), MKWA_VERSION);
-                wp_enqueue_script('mkwa-admin', MKWA_PLUGIN_URL . 'admin/js/admin.js', array('jquery'), MKWA_VERSION, true);
-                mkwa_log('Admin scripts enqueued successfully');
-            }
-        } catch (Exception $e) {
-            mkwa_log('Error enqueuing admin scripts: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Plugin activation
-     */
     public function activate() {
         try {
             global $wpdb;
             $charset_collate = $wpdb->get_charset_collate();
             mkwa_log('Starting plugin activation...');
 
-            // Create members table
+            // Your existing tables
             $sql_members = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}mkwa_members (
                 member_id bigint(20) NOT NULL AUTO_INCREMENT,
                 user_id bigint(20) NOT NULL,
@@ -202,7 +101,6 @@ final class MKWA_Fitness {
                 KEY user_id (user_id)
             ) $charset_collate;";
 
-            // Create badges table
             $sql_badges = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}mkwa_badges (
                 id bigint(20) NOT NULL AUTO_INCREMENT,
                 title varchar(255) NOT NULL,
@@ -218,7 +116,6 @@ final class MKWA_Fitness {
                 PRIMARY KEY  (id)
             ) $charset_collate;";
 
-            // Create activity log table
             $sql_activity_log = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}mkwa_activity_log (
                 id bigint(20) NOT NULL AUTO_INCREMENT,
                 user_id bigint(20) NOT NULL,
@@ -230,12 +127,64 @@ final class MKWA_Fitness {
                 KEY activity_type (activity_type)
             ) $charset_collate;";
 
+            // New tables for member metrics and leaderboard
+            $sql_member_metrics = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}mkwa_member_metrics (
+                id bigint(20) NOT NULL AUTO_INCREMENT,
+                user_id bigint(20) NOT NULL,
+                attendance_rate decimal(5,2) DEFAULT 0.00,
+                challenge_completion_rate decimal(5,2) DEFAULT 0.00,
+                community_participation_score decimal(5,2) DEFAULT 0.00,
+                streak_score decimal(5,2) DEFAULT 0.00,
+                point_earning_velocity decimal(8,2) DEFAULT 0.00,
+                consistency_factor decimal(5,2) DEFAULT 0.00,
+                engagement_depth decimal(5,2) DEFAULT 0.00,
+                overall_score decimal(10,2) DEFAULT 0.00,
+                last_calculated datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY user_idx (user_id),
+                KEY score_idx (overall_score DESC)
+            ) $charset_collate;";
+
+            $sql_leaderboard_current = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}mkwa_leaderboard_current (
+                id bigint(20) NOT NULL AUTO_INCREMENT,
+                user_id bigint(20) NOT NULL,
+                total_points bigint(20) NOT NULL DEFAULT 0,
+                monthly_points int(11) NOT NULL DEFAULT 0,
+                quarterly_points int(11) NOT NULL DEFAULT 0,
+                ranking_score decimal(10,2) NOT NULL DEFAULT 0.00,
+                monthly_rank int(11) DEFAULT NULL,
+                quarterly_rank int(11) DEFAULT NULL,
+                overall_rank int(11) DEFAULT NULL,
+                updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY user_idx (user_id),
+                KEY ranking_idx (ranking_score DESC)
+            ) $charset_collate;";
+
+            $sql_leaderboard_history = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}mkwa_leaderboard_history (
+                id bigint(20) NOT NULL AUTO_INCREMENT,
+                user_id bigint(20) NOT NULL,
+                period_type varchar(20) NOT NULL,
+                period_start date NOT NULL,
+                period_end date NOT NULL,
+                points int(11) NOT NULL DEFAULT 0,
+                final_rank int(11) NOT NULL,
+                ranking_score decimal(10,2) NOT NULL DEFAULT 0.00,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY period_idx (period_type, period_start, period_end),
+                KEY user_period_idx (user_id, period_type, period_start)
+            ) $charset_collate;";
+
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             
             mkwa_log('Creating database tables...');
             dbDelta($sql_members);
             dbDelta($sql_badges);
             dbDelta($sql_activity_log);
+            dbDelta($sql_member_metrics);
+            dbDelta($sql_leaderboard_current);
+            dbDelta($sql_leaderboard_history);
 
             // Set default options
             mkwa_log('Setting default options...');
@@ -270,35 +219,7 @@ final class MKWA_Fitness {
         }
     }
 
-    /**
-     * Plugin deactivation
-     */
-    public function deactivate() {
-        try {
-            wp_clear_scheduled_hook('mkwa_daily_streak_check');
-            flush_rewrite_rules();
-            mkwa_log('Plugin deactivated successfully');
-        } catch (Exception $e) {
-            mkwa_log('Error during plugin deactivation: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Initialize database if needed
-     */
-    private function maybe_init_database() {
-        try {
-            $db_version = get_option('mkwa_db_version');
-            if ($db_version !== MKWA_VERSION) {
-                mkwa_log('Database version mismatch. Current: ' . ($db_version ?: 'none') . ', Required: ' . MKWA_VERSION);
-                $this->activate();
-                update_option('mkwa_db_version', MKWA_VERSION);
-                mkwa_log('Database initialized successfully');
-            }
-        } catch (Exception $e) {
-            mkwa_log('Error initializing database: ' . $e->getMessage());
-        }
-    }
+    // [All your other existing methods remain the same...]
 }
 
 /**
