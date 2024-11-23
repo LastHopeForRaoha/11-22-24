@@ -102,6 +102,29 @@ class MKWA_Activities {
         // Add activity ID to data for points calculation
         $activity_data['activity_id'] = $activity_id;
         
+        // Calculate points based on activity type
+        $points = 0;
+        switch ($activity_type) {
+            case MKWA_ACTIVITY_CHECKIN:
+                $points = MKWA_POINTS_CHECKIN_DEFAULT;
+                break;
+            case MKWA_ACTIVITY_CLASS:
+                $points = MKWA_POINTS_CLASS_DEFAULT;
+                break;
+            case MKWA_ACTIVITY_COLD_PLUNGE:
+                $points = MKWA_POINTS_COLD_PLUNGE_DEFAULT;
+                break;
+            case MKWA_ACTIVITY_PR:
+                $points = MKWA_POINTS_PR_DEFAULT;
+                break;
+            case MKWA_ACTIVITY_COMPETITION:
+                $points = MKWA_POINTS_COMPETITION_DEFAULT;
+                break;
+        }
+
+        // Add points to member
+        mkwa_add_points($member_id, $points, $activity_type);
+        
         // Clear activity cache for member
         $this->clear_member_cache($member_id);
 

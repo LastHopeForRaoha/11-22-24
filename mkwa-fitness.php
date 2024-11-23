@@ -78,6 +78,29 @@ try {
     mkwa_log('Error loading functions.php: ' . $e->getMessage());
 }
 
+// Include points functions
+require_once plugin_dir_path(__FILE__) . 'includes/points-functions.php';
+
+// Example usage
+add_action('init', function() {
+    $member_id = 1; // Example member ID
+    $activity_type = MKWA_ACTIVITY_CHECKIN; // Example activity type
+    $points = MKWA_POINTS_CHECKIN_DEFAULT; // Example points value
+
+    // Add points to member
+    mkwa_add_points($member_id, $points, $activity_type);
+});
+
+// Include badge system
+require_once plugin_dir_path(__FILE__) . 'includes/badge-system.php';
+
+add_action('mkwa_activity_logged', function($member_id) {
+    $points = mkwa_get_member_points($member_id);
+
+    // Award badge based on points
+    mkwa_award_badge($member_id, $points);
+});
+
 /**
  * Main plugin class
  */

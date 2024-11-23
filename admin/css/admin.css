@@ -69,6 +69,7 @@
     color: #dc3232;
     font-style: italic;
 }
+
 /* Dashboard specific styles */
 .mkwa-dashboard-wrapper {
     display: grid;
@@ -136,5 +137,67 @@
     
     .mkwa-card:first-child {
         grid-column: 1 / -1;
+    }
+}
+
+/* Animated Badges */
+.animated-badge {
+    display: inline-block;
+    margin: 10px;
+    text-align: center;
+    animation: sparkle 2s infinite;
+}
+
+.animated-badge img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    padding: 5px;
+    background: #fff;
+}
+
+.animated-badge .badge-title {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Progress Bars */
+.progress-bar {
+    position: relative;
+    height: 30px;
+    background: #f3f3f3;
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.progress-bar .progress {
+    height: 100%;
+    background: linear-gradient(90deg, #2271b1 0%, #23a6d5 100%);
+    transition: width 0.3s ease;
+}
+
+.progress-bar .progress-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    color: #fff;
+}
+
+/* Keyframes for sparkle animation */
+@keyframes sparkle {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
     }
 }

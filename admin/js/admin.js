@@ -97,4 +97,23 @@ jQuery(document).ready(function($) {
             alert('Please fill in all required fields.');
         }
     });
+
+    // Function to update progress bars
+    function updateProgressBars() {
+        $('.progress-bar .progress').each(function() {
+            var $this = $(this);
+            var percentage = $this.data('percentage');
+            $this.css('width', percentage + '%');
+        });
+    }
+
+    // Call the function to update progress bars on page load
+    updateProgressBars();
+
+    // Add event listener for badge animation (if needed)
+    $('.animated-badge').on('mouseenter', function() {
+        $(this).addClass('sparkle');
+    }).on('mouseleave', function() {
+        $(this).removeClass('sparkle');
+    });
 });
